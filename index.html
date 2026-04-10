@@ -39,17 +39,12 @@
     #result {
       font-size: 60px;
       margin-top: 30px;
-      color: #00e5ff;
+      color: white;
     }
 
     #history {
       margin-top: 30px;
       font-size: 18px;
-    }
-
-    /* ? 흰색 */
-    #question {
-      color: white;
     }
   </style>
 </head>
@@ -63,10 +58,10 @@
 
 <br>
 
-<button onclick="init()">초기화</button>
-<button onclick="draw()">추첨</button>
+<button onclick="init()">초기화!</button>
+<button onclick="draw()">추첨!</button>
 
-<div id="result"><span id="question">?</span></div>
+<div id="result">?</div>
 <div id="history">기록: 없음</div>
 
 <script>
@@ -86,12 +81,12 @@ function init() {
   let max = Number(document.getElementById("max").value);
 
   if (!Number.isFinite(min) || !Number.isFinite(max)) {
-    alert("숫자를 제대로 입력해");
+    alert("숫자를 제대로 입력해!");
     return;
   }
 
   if (min >= max) {
-    alert("최소값이 최대값보다 작아야 함");
+    alert("최소값이 최대값보다 작아야 함!");
     return;
   }
 
@@ -104,18 +99,18 @@ function init() {
 
   isReady = true;
 
-  document.getElementById("result").innerHTML = '<span id="question">?</span>';
+  document.getElementById("result").innerText = "준비 완료!";
   document.getElementById("history").innerText = "기록: 없음";
 }
 
 function draw() {
   if (!isReady) {
-    alert("먼저 초기화부터 해");
+    alert("초기화부터 해줘!");
     return;
   }
 
   if (numbers.length === 0) {
-    alert("더 이상 뽑을 숫자가 없음");
+    alert("더 이상 뽑을 숫자가 없음!");
     return;
   }
 
