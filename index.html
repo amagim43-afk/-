@@ -9,7 +9,7 @@
     body {
       text-align: center;
       font-family: sans-serif;
-      margin-top: 80px;
+      margin-top: 60px;
       background: #000;
       color: white;
     }
@@ -26,8 +26,8 @@
     }
 
     button {
-      font-size: 22px;
-      padding: 12px 30px;
+      font-size: 20px;
+      padding: 12px 25px;
       margin: 10px;
       border: none;
       border-radius: 10px;
@@ -37,8 +37,13 @@
 
     #result {
       font-size: 60px;
-      margin-top: 40px;
+      margin-top: 30px;
       color: #00e5ff;
+    }
+
+    #history {
+      margin-top: 30px;
+      font-size: 18px;
     }
   </style>
 </head>
@@ -52,13 +57,16 @@
 
 <br>
 
-<button onclick="init()">시작</button>
+<button onclick="init()">초기화</button>
 <button onclick="draw()">추첨!</button>
 
 <div id="result">?</div>
 
+<div id="history">기록: 없음</div>
+
 <script>
 let numbers = [];
+let history = [];
 
 function init() {
   let min = Number(document.getElementById("min").value);
@@ -75,11 +83,14 @@ function init() {
   }
 
   numbers = [];
+  history = [];
+
   for (let i = min; i <= max; i++) {
     numbers.push(i);
   }
 
-  document.getElementById("result").innerText = "시작!";
+  document.getElementById("result").innerText = "준비 완료!";
+  document.getElementById("history").innerText = "기록: 없음";
 }
 
 function draw() {
@@ -92,8 +103,10 @@ function draw() {
   let num = numbers[index];
 
   numbers.splice(index, 1);
+  history.push(num);
 
   document.getElementById("result").innerText = num;
+  document.getElementById("history").innerText = "기록: " + history.join(", ");
 }
 </script>
 
