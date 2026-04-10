@@ -28,16 +28,17 @@
     button {
       font-size: 22px;
       padding: 12px 30px;
-      margin-top: 20px;
+      margin: 10px;
       border: none;
       border-radius: 10px;
-      background: #4CAF50;
+      background: #00c853;
       color: white;
     }
 
     #result {
       font-size: 60px;
       margin-top: 40px;
+      color: #00e5ff;
     }
   </style>
 </head>
@@ -51,19 +52,25 @@
 
 <br>
 
+<button onclick="init()">시작</button>
 <button onclick="draw()">추첨!</button>
 
 <div id="result">?</div>
 
 <script>
-let numbers = []; // 남은 숫자들
+let numbers = [];
 
 function init() {
   let min = Number(document.getElementById("min").value);
   let max = Number(document.getElementById("max").value);
 
+  if (isNaN(min) || isNaN(max)) {
+    alert("숫자를 입력해!");
+    return;
+  }
+
   if (min >= max) {
-    alert("범위 제대로 입력!");
+    alert("최소값이 더 작아야 함!");
     return;
   }
 
@@ -71,6 +78,8 @@ function init() {
   for (let i = min; i <= max; i++) {
     numbers.push(i);
   }
+
+  document.getElementById("result").innerText = "시작!";
 }
 
 function draw() {
@@ -82,7 +91,7 @@ function draw() {
   let index = Math.floor(Math.random() * numbers.length);
   let num = numbers[index];
 
-  numbers.splice(index, 1); // 뽑은 숫자 제거
+  numbers.splice(index, 1);
 
   document.getElementById("result").innerText = num;
 }
