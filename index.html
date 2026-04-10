@@ -61,24 +61,28 @@
 <button onclick="draw()">추첨!</button>
 
 <div id="result">?</div>
-
 <div id="history">기록: 없음</div>
 
 <script>
 let numbers = [];
 let history = [];
+let isReady = false; // ⭐ 초기화 여부 체크
 
 function init() {
-  let min = Number(document.getElementById("min").value);
-  let max = Number(document.getElementById("max").value);
+  let min = document.getElementById("min").value;
+  let max = document.getElementById("max").value;
 
-  if (isNaN(min) || isNaN(max)) {
-    alert("숫자를 입력해!");
+  min = Number(min);
+  max = Number(max);
+
+  // ✅ 입력 검증 강화
+  if (!Number.isFinite(min) || !Number.isFinite(max)) {
+    alert("숫자를 제대로 입력해!");
     return;
   }
 
   if (min >= max) {
-    alert("최소값이 더 작아야 함!");
+    alert("최소값이 최대값보다 작아야 함!");
     return;
   }
 
@@ -89,11 +93,19 @@ function init() {
     numbers.push(i);
   }
 
+  isReady = true; // ⭐ 초기화 완료
+
   document.getElementById("result").innerText = "준비 완료!";
   document.getElementById("history").innerText = "기록: 없음";
 }
 
 function draw() {
+  // ⭐ 초기화 안 했을 때 방지
+  if (!isReady) {
+    alert("먼저 초기화부터 해!");
+    return;
+  }
+
   if (numbers.length === 0) {
     alert("더 이상 뽑을 숫자가 없음!");
     return;
