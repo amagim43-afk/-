@@ -1,13 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>번호 추첨기</title>
+
+  <style>
+    body {
+      text-align: center;
+      font-family: sans-serif;
+      margin-top: 60px;
+      background: #000;
+      color: white;
+    }
+
+    h1 {
+      font-size: 32px;
+    }
+
+    input {
+      font-size: 20px;
+      padding: 10px;
+      width: 80px;
+      margin: 5px;
+    }
+
+    button {
+      font-size: 20px;
+      padding: 12px 25px;
+      margin: 10px;
+      border: none;
+      border-radius: 10px;
+      background: #00c853;
+      color: white;
+      cursor: pointer;
+    }
+
+    #result {
+      font-size: 60px;
+      margin-top: 30px;
+      color: #00e5ff;
+    }
+
+    #history {
+      margin-top: 30px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>번호 추첨기 🎲</h1>
+
+<input id="min" type="number" placeholder="최소">
+<input id="max" type="number" placeholder="최대">
+
+<br>
+
+<button onclick="init()">초기화</button>
+<button onclick="draw()">추첨!</button>
+
+<div id="result">?</div>
+<div id="history">기록: 없음</div>
+
 <script>
-function getCryptoRandomIndex(max) {
-  // max: numbers.length
-  const array = new Uint32Array(1);
+let numbers = [];
+let history = [];
+let isReady = false;
 
-  // 암호학적 난수 생성
-  crypto.getRandomValues(array);
+// 🎯 안전한 랜덤 (crypto + fallback)
+function getRandomIndex(max) {
+  if (max <= 0) return 0;
 
-  // 0 ~ max-1 범위로 변환
-  return array[0] % max;
+  // crypto 지원될 때
+  if (window.crypto && window.crypto.getRandomValues) {
+    const array = new Uint32Array(1);
+    crypto.getRandomValues(array);
+    return array[0] % max;
+  }
+
+  // fallback (구형 환경)
+  return Math.floor(Math.random() * max);
+}
+
+function init() {
+  let min = Number(document.getElementById("min").value);
+  let max = Number(document.getElementById("max").value);
+
+  if (!Number.isFinite(min) || !Number.isFinite(max)) {
+    alert("숫자를 제대로 입력해!");
+    return;
+  }
+
+  if (min >= max) {
+    alert("최소값이 최대값보다 작아야 함!");
+    return;
+  }
+
+  numbers = [];
+  history = [];
+
+  for (let i = min; i <= max; i++) {
+    numbers.push(i);
+  }
+
+  isReady = true;
+
+  document.getElementById("result").innerText = "준비 완료!";
+  document.getElementById("history").innerText = "기록: 없음";
 }
 
 function draw() {
@@ -21,8 +122,8 @@ function draw() {
     return;
   }
 
-  // ⭐ 암호학적 랜덤 인덱스
-  let index = getCryptoRandomIndex(numbers.length);
+  // 🎲 안전 랜덤 인덱스
+  let index = getRandomIndex(numbers.length);
   let num = numbers[index];
 
   numbers.splice(index, 1);
@@ -32,3 +133,6 @@ function draw() {
   document.getElementById("history").innerText = "기록: " + history.join(", ");
 }
 </script>
+
+</body>
+</html>
