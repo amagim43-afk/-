@@ -1,106 +1,16 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>번호 추첨기</title>
-
-  <style>
-    body {
-      text-align: center;
-      font-family: sans-serif;
-      margin-top: 60px;
-      background: #000;
-      color: white;
-    }
-
-    h1 {
-      font-size: 32px;
-    }
-
-    input {
-      font-size: 20px;
-      padding: 10px;
-      width: 80px;
-      margin: 5px;
-    }
-
-    button {
-      font-size: 20px;
-      padding: 12px 25px;
-      margin: 10px;
-      border: none;
-      border-radius: 10px;
-      background: #00c853;
-      color: white;
-    }
-
-    #result {
-      font-size: 60px;
-      margin-top: 30px;
-      color: #00e5ff;
-    }
-
-    #history {
-      margin-top: 30px;
-      font-size: 18px;
-    }
-  </style>
-</head>
-
-<body>
-
-<h1>번호 추첨기 🎲</h1>
-
-<input id="min" type="number" placeholder="최소">
-<input id="max" type="number" placeholder="최대">
-
-<br>
-
-<button onclick="init()">초기화</button>
-<button onclick="draw()">추첨!</button>
-
-<div id="result">?</div>
-<div id="history">기록: 없음</div>
-
 <script>
-let numbers = [];
-let history = [];
-let isReady = false; // ⭐ 초기화 여부 체크
+function getCryptoRandomIndex(max) {
+  // max: numbers.length
+  const array = new Uint32Array(1);
 
-function init() {
-  let min = document.getElementById("min").value;
-  let max = document.getElementById("max").value;
+  // 암호학적 난수 생성
+  crypto.getRandomValues(array);
 
-  min = Number(min);
-  max = Number(max);
-
-  // ✅ 입력 검증 강화
-  if (!Number.isFinite(min) || !Number.isFinite(max)) {
-    alert("숫자를 제대로 입력해!");
-    return;
-  }
-
-  if (min >= max) {
-    alert("최소값이 최대값보다 작아야 함!");
-    return;
-  }
-
-  numbers = [];
-  history = [];
-
-  for (let i = min; i <= max; i++) {
-    numbers.push(i);
-  }
-
-  isReady = true; // ⭐ 초기화 완료
-
-  document.getElementById("result").innerText = "준비 완료!";
-  document.getElementById("history").innerText = "기록: 없음";
+  // 0 ~ max-1 범위로 변환
+  return array[0] % max;
 }
 
 function draw() {
-  // ⭐ 초기화 안 했을 때 방지
   if (!isReady) {
     alert("먼저 초기화부터 해!");
     return;
@@ -111,7 +21,8 @@ function draw() {
     return;
   }
 
-  let index = Math.floor(Math.random() * numbers.length);
+  // ⭐ 암호학적 랜덤 인덱스
+  let index = getCryptoRandomIndex(numbers.length);
   let num = numbers[index];
 
   numbers.splice(index, 1);
@@ -121,6 +32,3 @@ function draw() {
   document.getElementById("history").innerText = "기록: " + history.join(", ");
 }
 </script>
-
-</body>
-</html>
