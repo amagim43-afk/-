@@ -1,78 +1,19 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>번호 추첨기</title>
-
-  <style>
-    body {
-      text-align: center;
-      font-family: sans-serif;
-      margin-top: 60px;
-      background: #000;
-      color: white;
-    }
-
-    h1 {
-      font-size: 32px;
-    }
-
-    input {
-      font-size: 20px;
-      padding: 10px;
-      width: 80px;
-      margin: 5px;
-    }
-
-    button {
-      font-size: 20px;
-      padding: 12px 25px;
-      margin: 10px;
-      border: none;
-      border-radius: 10px;
-      background: #00c853;
-      color: white;
-      cursor: pointer;
-    }
-
-    #result {
-      font-size: 60px;
-      margin-top: 30px;
-      color: white;
-    }
-
-    #history {
-      margin-top: 30px;
-      font-size: 18px;
-    }
-  </style>
-</head>
-
-<body>
-
-<h1>번호 추첨기 🎲</h1>
-
-<input id="min" type="number" placeholder="최소">
-<input id="max" type="number" placeholder="최대">
-
-<br>
-
-<button onclick="init()">초기화</button>
-<button onclick="draw()">추첨</button>
-
-<div id="result">?</div>
-<div id="history">기록: </div>
-
 <script>
 let numbers = [];
 let history = [];
 let isReady = false;
 
-// 🎯 crypto 전용 랜덤
+// 🎯 편향 제거된 crypto 랜덤
 function getCryptoRandomIndex(max) {
+  const maxUint32 = 4294967295;
+  const limit = maxUint32 - (maxUint32 % max);
+
   const array = new Uint32Array(1);
-  crypto.getRandomValues(array);
+
+  do {
+    crypto.getRandomValues(array);
+  } while (array[0] >= limit);
+
   return array[0] % max;
 }
 
@@ -121,9 +62,7 @@ function draw() {
   history.push(num);
 
   document.getElementById("result").innerText = num;
-  document.getElementById("history").innerText = "기록: " + history.join(", ");
+  document.getElementById("history").innerText =
+    "기록: " + history.join(", ");
 }
 </script>
-
-</body>
-</html>
