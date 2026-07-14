@@ -1,60 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>번호 추첨기</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>번호 추첨기</title>
 
-  <style>
-    body {
-      text-align: center;
-      font-family: sans-serif;
-      margin-top: 60px;
-      background: #000;
-      color: white;
-    }
+<style>
+body {
+  text-align: center;
+  margin-top: 60px;
+  background: #000;
+  color: #fff;
+}
 
-    h1 {
-      font-size: 32px;
-    }
+h1 {
+  font-size: 32px;
+}
 
-    input {
-      font-size: 20px;
-      padding: 10px;
-      width: 80px;
-      margin: 5px;
-    }
+input {
+  font-size: 20px;
+  padding: 10px;
+  width: 80px;
+  margin: 5px;
+}
 
-    button {
-      font-size: 20px;
-      padding: 12px 25px;
-      margin: 10px;
-      border: none;
-      border-radius: 10px;
-      background: #00c853;
-      color: white;
-      cursor: pointer;
-    }
+button {
+  font-size: 20px;
+  padding: 12px 25px;
+  margin: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #00c853;
+  color: #fff;
+  cursor: pointer;
+}
 
-    #result {
-      font-size: 60px;
-      margin-top: 30px;
-      color: white;
-    }
+#result {
+  font-size: 60px;
+  margin-top: 30px;
+  word-break: break-word;
+}
 
-    #history {
-      margin-top: 30px;
-      font-size: 18px;
-    }
-  </style>
+#history {
+  margin-top: 30px;
+  font-size: 18px;
+  word-break: break-word;
+}
+</style>
 </head>
 
 <body>
 
-<h1>번호 추첨기 🫪</h1>
+<h1>번호 추첨기 🦤</h1>
 
 <input id="min" type="number" placeholder="최소">
 <input id="max" type="number" placeholder="최대">
+<input id="count" type="number" placeholder="개수" value="1" min="1">
 
 <br>
 
@@ -69,12 +70,11 @@ let numbers = [];
 let history = [];
 let isReady = false;
 
-// 🎯 편향 제거된 crypto 랜덤
+const array = new Uint32Array(1);
+
 function getCryptoRandomIndex(max) {
   const maxUint32 = 4294967295;
   const limit = maxUint32 - (maxUint32 % max);
-
-  const array = new Uint32Array(1);
 
   do {
     crypto.getRandomValues(array);
@@ -84,16 +84,16 @@ function getCryptoRandomIndex(max) {
 }
 
 function init() {
-  let min = Number(document.getElementById("min").value);
-  let max = Number(document.getElementById("max").value);
+  const min = Number(document.getElementById("min").value);
+  const max = Number(document.getElementById("max").value);
 
   if (!Number.isFinite(min) || !Number.isFinite(max)) {
-    alert("숫자 제대로 입력");
+    alert("숫자를 제대로 입력해!");
     return;
   }
 
   if (min >= max) {
-    alert("최소값이 최대값보다 작아야 함!");
+    alert("최소값이 최대값보다 작아야 해!");
     return;
   }
 
@@ -116,18 +116,35 @@ function draw() {
     return;
   }
 
-  if (numbers.length === 0) {
-    alert("더 이상 뽑을 숫자가 없음!");
+  const count = Number(document.getElementById("count").value);
+
+  if (!Number.isInteger(count) || count < 1) {
+    alert("개수를 1 이상 입력해!");
     return;
   }
 
-  let index = getCryptoRandomIndex(numbers.length);
-  let num = numbers[index];
+  if (numbers.length === 0) {
+    alert("더 이상 뽑을 숫자가 없어!");
+    return;
+  }
 
-  numbers.splice(index, 1);
-  history.push(num);
+  if (count > numbers.length) {
+    alert("남은 숫자보다 많이 뽑을 수 없어!");
+    return;
+  }
 
-  document.getElementById("result").innerText = num;
+  const results = [];
+
+  for (let i = 0; i < count; i++) {
+    const index = getCryptoRandomIndex(numbers.length);
+    const num = numbers[index];
+
+    numbers.splice(index, 1);
+    history.push(num);
+    results.push(num);
+  }
+
+  document.getElementById("result").innerText = results.join(", ");
   document.getElementById("history").innerText =
     "기록: " + history.join(", ");
 }
