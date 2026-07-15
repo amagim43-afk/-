@@ -21,7 +21,6 @@ input {
   font-size: 20px;
   padding: 10px;
   width: 80px;
-  margin: 5px;
 }
 
 button {
@@ -38,32 +37,72 @@ button {
 #result {
   font-size: 60px;
   margin-top: 30px;
-  word-break: break-word;
 }
 
 #history {
   margin-top: 30px;
   font-size: 18px;
-  word-break: break-word;
 }
 </style>
 </head>
 
 <body>
 
-<h1>번호 추첨기 🦤</h1>
+<h1>번호 추첨기 🫪</h1>
 
 <input id="min" type="number" placeholder="최소">
 <input id="max" type="number" placeholder="최대">
-<input id="count" type="number" placeholder="개수" value="1" min="1">
 
 <br>
 
 <button onclick="init()">초기화</button>
 <button onclick="draw()">추첨</button>
+<button onclick="toggleRecords()">📋 기록</button>
+<div id="saveBox" style="margin-top:20px;">
+  <input
+    id="recordName"
+    type="text"
+    placeholder="기록 이름"
+    style="width:180px;"
+  >
+  <button onclick="saveRecord()">💾 저장</button>
+</div>
 
 <div id="result">?</div>
-<div id="history">기록: </div>
+<div id="history">기록:</div>
+<div id="recordMenu" style="
+display:none;
+margin:20px auto;
+padding:15px;
+width:90%;
+max-width:500px;
+background:#222;
+border-radius:10px;
+text-align:left;
+">
+<h3>📋 저장된 기록</h3>
+<div id="recordMenu" style="
+position: fixed;
+top: 0;
+left: -320px;
+width: 300px;
+height: 100%;
+background: #222;
+color: white;
+overflow-y: auto;
+transition: 0.3s;
+padding: 20px;
+box-sizing: border-box;
+z-index: 1000;
+">
+
+<h2>📋 저장된 기록</h2>
+
+<div id="recordList">
+저장된 기록이 없습니다.
+</div>
+
+</div>
 
 <script>
 let numbers = [];
@@ -88,12 +127,12 @@ function init() {
   const max = Number(document.getElementById("max").value);
 
   if (!Number.isFinite(min) || !Number.isFinite(max)) {
-    alert("숫자를 제대로 입력해!");
+    alert("숫자 제대로 입력");
     return;
   }
 
   if (min >= max) {
-    alert("최소값이 최대값보다 작아야 해!");
+    alert("최소값이 최대값보다 작아야 함!");
     return;
   }
 
@@ -105,7 +144,6 @@ function init() {
   }
 
   isReady = true;
-
   document.getElementById("result").innerText = "준비 완료!";
   document.getElementById("history").innerText = "기록: 없음";
 }
@@ -116,39 +154,86 @@ function draw() {
     return;
   }
 
-  const count = Number(document.getElementById("count").value);
-
-  if (!Number.isInteger(count) || count < 1) {
-    alert("개수를 1 이상 입력해!");
-    return;
-  }
-
   if (numbers.length === 0) {
-    alert("더 이상 뽑을 숫자가 없어!");
+    alert("더 이상 뽑을 숫자가 없음!");
     return;
   }
 
-  if (count > numbers.length) {
-    alert("남은 숫자보다 많이 뽑을 수 없어!");
+  const index = getCryptoRandomIndex(numbers.length);
+  const num = numbers[index];
+
+  numbers.splice(index, 1);
+  history.push(num);
+
+  document.getElementById("result").innerText = num;
+  document.getElementById("history").innerText = "기록: " + history.join(", ");
+}
+
+function toggleRecords() {
+  const menu = document.getElementById("recordMenu");
+
+  if (menu.style.left === "0px") {
+    menu.style.left = "-320px";
+  } else {
+    menu.style.left = "0px";
+    updateRecordList();
+  }
+}
+
+function saveRecord() {
+
+  if (history.length === 0) {
+    alert("저장할 추첨 결과가 없습니다.");
     return;
   }
 
-  const results = [];
+  const input = document.getElementById("recordName");
+  const name = input.value.trim();
 
-  for (let i = 0; i < count; i++) {
-    const index = getCryptoRandomIndex(numbers.length);
-    const num = numbers[index];
-
-    numbers.splice(index, 1);
-    history.push(num);
-    results.push(num);
+  if (name === "") {
+    alert("기록 이름을 입력하세요.");
+    return;
   }
 
-  document.getElementById("result").innerText = results.join(", ");
-  document.getElementById("history").innerText =
-    "기록: " + history.join(", ");
+  savedRecords.unshift({
+    name: name,
+    date: new Date().toLocaleString(),
+    numbers: [...history]
+  });
+
+  localStorage.setItem(
+    "savedRecords",
+    JSON.stringify(savedRecords)
+  );
+
+  input.value = "";
+
+  updateRecordList();
+
+  alert("저장되었습니다!");
+}
+
+}
+function deleteRecord(index) {
+  if (!confirm("이 기록을 삭제할까요?")) return;
+
+  savedRecords.splice(index, 1);
+
+  localStorage.setItem(
+    "savedRecords",
+    JSON.stringify(savedRecords)
+  );
+
+  updateRecordList();
 }
 </script>
 
 </body>
 </html>
+
+let numbers = [];
+let history = [];
+let isReady = false;
+
+let savedRecords =
+  JSON.parse(localStorage.getItem("savedRecords")) || [];
