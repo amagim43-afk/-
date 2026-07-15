@@ -6,11 +6,19 @@
 <title>번호 추첨기🦦</title>
 
 <style>
-body {
+  body {
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    "Apple SD Gothic Neo",
+    "Malgun Gothic",
+    sans-serif;
+
   text-align: center;
   margin-top: 60px;
   background: #000;
-  color: #fff;
+  color: white;
 }
 
 h1 {
@@ -71,25 +79,15 @@ button {
 <div id="result">?</div>
 <div id="history">기록:</div>
 <div id="recordMenu" style="
-display:none;
-margin:20px auto;
-padding:15px;
-width:90%;
-max-width:500px;
-background:#222;
-border-radius:10px;
-text-align:left;
-">
-<h3>📋 저장된 기록</h3>
 position: fixed;
 top: 0;
 left: -320px;
-width: 300px;
+width: 320px;
 height: 100%;
-background: #222;
+background: #1b1b1b;
 color: white;
 overflow-y: auto;
-transition: 0.3s;
+transition: left 0.3s ease;
 padding: 20px;
 box-sizing: border-box;
 z-index: 1000;
@@ -100,6 +98,7 @@ z-index: 1000;
 <div id="recordList">
 저장된 기록이 없습니다.
 </div>
+
 
 </div>
 
