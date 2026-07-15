@@ -81,7 +81,6 @@ border-radius:10px;
 text-align:left;
 ">
 <h3>📋 저장된 기록</h3>
-<div id="recordMenu" style="
 position: fixed;
 top: 0;
 left: -320px;
@@ -108,6 +107,13 @@ z-index: 1000;
 let numbers = [];
 let history = [];
 let isReady = false;
+
+
+
+let savedRecords =
+
+  JSON.parse(localStorage.getItem("savedRecords")) || [];
+
 
 const array = new Uint32Array(1);
 
@@ -212,7 +218,26 @@ function saveRecord() {
 
   alert("저장되었습니다!");
 }
+function updateRecordList() {
+  const list = document.getElementById("recordList");
 
+  if (savedRecords.length === 0) {
+    list.innerHTML = "저장된 기록이 없습니다.";
+    return;
+  }
+
+  list.innerHTML = "";
+
+  savedRecords.forEach((record, index) => {
+    list.innerHTML += `
+      <div style="margin-bottom:15px;padding:10px;background:#333;border-radius:8px;">
+        <b>${record.name}</b><br>
+        <small>${record.date}</small><br>
+        ${record.numbers.join(", ")}<br><br>
+        <button onclick="deleteRecord(${index})">삭제</button>
+      </div>
+    `;
+  });
 }
 function deleteRecord(index) {
   if (!confirm("이 기록을 삭제할까요?")) return;
@@ -231,9 +256,3 @@ function deleteRecord(index) {
 </body>
 </html>
 
-let numbers = [];
-let history = [];
-let isReady = false;
-
-let savedRecords =
-  JSON.parse(localStorage.getItem("savedRecords")) || [];
