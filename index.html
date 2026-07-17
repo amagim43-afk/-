@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>번호 추첨기🦦</title>
+<title>번호 추첨기</title>
 
 <style>
   body {
@@ -56,7 +56,7 @@ button {
 
 <body>
 
-<h1>번호 추첨기 🫪</h1>
+<h1>번호 추첨기🦢 </h1>
 
 <input id="min" type="number" placeholder="최소">
 <input id="max" type="number" placeholder="최대">
@@ -247,7 +247,8 @@ function updateRecordList() {
         <b>${record.name}</b><br>
         <small>${record.date}</small><br>
         ${record.numbers.join(", ")}<br><br>
-        <button onclick="deleteRecord(${index})">삭제</button>
+       <button onclick="renameRecord(${index})">✏️ 수정</button>
+<button onclick="deleteRecord(${index})">삭제</button>
       </div>
     `;
   });
@@ -256,6 +257,30 @@ function deleteRecord(index) {
   if (!confirm("이 기록을 삭제할까요?")) return;
 
   savedRecords.splice(index, 1);
+
+  localStorage.setItem(
+    "savedRecords",
+    JSON.stringify(savedRecords)
+  );
+
+  updateRecordList();
+}
+function renameRecord(index) {
+  const newName = prompt(
+    "새로운 기록 이름을 입력하세요.",
+    savedRecords[index].name
+  );
+
+  if (newName === null) return;
+
+  const name = newName.trim();
+
+  if (name === "") {
+    alert("이름을 입력하세요.");
+    return;
+  }
+
+  savedRecords[index].name = name;
 
   localStorage.setItem(
     "savedRecords",
